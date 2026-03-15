@@ -110,6 +110,10 @@ A third node is planned for lab expansion (Active Directory, SIEM, networking pr
 | Pi-hole | Running | Internal DNS resolver and network-wide ad blocking |
 | _(additional services)_ | — | _(add as deployed)_ |
 
+| Service | Status | Purpose |
+|---|---|---|
+| Personal Finance Tracker | Developing |  |
+| _(additional services)_ | — | _(add as deployed)_ |
 ---
 
 ## Network Configuration
