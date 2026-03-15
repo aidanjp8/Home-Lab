@@ -60,7 +60,7 @@ A third node is planned for lab expansion (Active Directory, SIEM, networking pr
 
 | Component | Specification |
 |---|---|
-| Host Machine | _(e.g., Dell OptiPlex 7050)_ |
+| Host Machine | Dell OptiPlex 7050)_ |
 | CPU | _(e.g., Intel Core i7-7700)_ |
 | RAM | _(e.g., 16GB DDR4)_ |
 | Storage | _(e.g., 512GB SSD)_ |
@@ -76,13 +76,13 @@ A third node is planned for lab expansion (Active Directory, SIEM, networking pr
 | Storage | External 1TB SSD |
 | Role | Internal DNS (Pi-hole) and self-hosted services |
 
-### Node 3 — (Planned)
+### Node 3 — Secondary Services Host (UnRaid)
 
 | Component | Specification |
 |---|---|
-| Host Machine | TBD |
-| Planned Role | Lab expansion — Active Directory, SIEM, networking experiments |
-| Status | 🔲 Not yet deployed |
+| Host Machine | HP EliteDesk |
+| Role | Lab expansion — Active Directory, Wazuh SIEM, networking experiments |
+| Storage | 1TB Internal SSD |
 
 ---
 
