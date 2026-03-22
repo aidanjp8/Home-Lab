@@ -15,8 +15,9 @@
 5. [Network Configuration](#network-configuration)
 6. [Security Posture](#security-posture)
 7. [Maintenance Procedures](#maintenance-procedures)
-8. [Troubleshooting Runbook](#troubleshooting-runbook)
-9. [Security Notice](#security-notice--public-repository-disclosure)
+8. [Scripts](#scripts)
+9. [Troubleshooting Runbook](#troubleshooting-runbook)
+10. [Security Notice](#security-notice--public-repository-disclosure)
 
 ---
 
@@ -196,6 +197,11 @@ docker compose up -d
 
 ---
 
+## Scripts
+### Scripts
+| Node | Description | Container | Path | Script |
+|---|---|---|---|---|
+---
 ## Troubleshooting Runbook
 
 ### Service Not Responding
