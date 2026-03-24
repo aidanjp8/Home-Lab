@@ -197,11 +197,162 @@ docker compose up -d
 
 ---
 
-## Scripts
-### Scripts
-| Node | Description | Container | Path | Script |
-|---|---|---|---|---|
+# Scripts
+## Setup
+ 
+```bash
+# 1. Clone the repo
+git clone git@github.com:aidanjp8/Home-Lab.git /opt/homelab
+cd /opt/homelab
+ 
+# 2. Create your config
+cp .env.example .env
+nano .env
+ 
+# 3. Make scripts executable
+find . -name "*.sh" -exec chmod +x {} \;
+ 
+# 4. Create log directory
+mkdir -p /var/log/homelab
+```
+ 
 ---
+ 
+## Scripts
+ 
+### `proxmox/scripts/node-health.sh`
+Reports the health of the Proxmox node — CPU temperature, RAM usage, system load, ZFS pool status, disk usage, and a summary of running VMs and containers. Runs on Proxmox only.
+ 
+```bash
+./proxmox/scripts/node-health.sh
+./proxmox/scripts/node-health.sh --dry-run
+```
+ 
+Recommended schedule: hourly
+```
+0 * * * * /opt/homelab/proxmox/scripts/node-health.sh
+```
+ 
+---
+ 
+### `proxmox/scripts/pve-update.sh`
+Safely updates the Proxmox host. Snapshots all running VMs and containers before touching anything, runs `apt dist-upgrade`, prunes old snapshots, and optionally reboots if a kernel update requires it.
+ 
+```bash
+./proxmox/scripts/pve-update.sh
+./proxmox/scripts/pve-update.sh --dry-run
+./proxmox/scripts/pve-update.sh --no-snapshot   # skip snapshots
+./proxmox/scripts/pve-update.sh --reboot        # auto-reboot if needed
+```
+ 
+Recommended schedule: weekly
+```
+0 3 * * 0 /opt/homelab/proxmox/scripts/pve-update.sh --reboot
+```
+ 
+---
+ 
+### `unraid/scripts/appdata-backup.sh`
+Backs up the Unraid `/appdata` directory to a backup share with configurable retention. Defaults to rsync (fast, incremental). Use `--compress` for gzip tarballs instead. Optionally stops specified containers before backup for clean database snapshots.
+ 
+```bash
+./unraid/scripts/appdata-backup.sh
+./unraid/scripts/appdata-backup.sh --dry-run
+./unraid/scripts/appdata-backup.sh --compress   # tarball instead of rsync
+```
+ 
+Recommended schedule: daily at 4am
+```
+0 4 * * * /opt/homelab/unraid/scripts/appdata-backup.sh
+```
+ 
+---
+ 
+### `unraid/scripts/container-update.sh`
+Pulls the latest images for all Docker Compose stacks found under `DOCKER_COMPOSE_DIR`, recreates changed containers, and does a basic health check after startup. Also handles standalone (non-compose) containers. Optionally prunes dangling images.
+ 
+```bash
+./unraid/scripts/container-update.sh
+./unraid/scripts/container-update.sh --dry-run
+./unraid/scripts/container-update.sh --no-prune  # keep old images
+```
+ 
+Recommended schedule: weekly
+```
+0 3 * * 0 /opt/homelab/unraid/scripts/container-update.sh
+```
+ 
+---
+ 
+### `shared/disk-temp-alert.sh`
+Checks SMART data for all configured disks. Alerts on high temperatures, reallocated sectors, pending sectors, and uncorrectable errors. Auto-detects block devices if `DISK_DEVICES` is not set in `.env`. Runs on both nodes.
+ 
+```bash
+./shared/disk-temp-alert.sh
+./shared/disk-temp-alert.sh --dry-run
+```
+ 
+Recommended schedule: every 30 minutes
+```
+*/30 * * * * /opt/homelab/shared/disk-temp-alert.sh
+```
+ 
+---
+ 
+### `shared/ssl-expiry-check.sh`
+Checks SSL certificate expiry for all domains listed in `SSL_DOMAINS`. Warns if any cert expires within `SSL_WARN_DAYS` (default 30). Also supports checking local cert files directly via `SSL_CERT_FILES`. Runs on both nodes.
+ 
+```bash
+./shared/ssl-expiry-check.sh
+./shared/ssl-expiry-check.sh --dry-run
+```
+ 
+Recommended schedule: weekly
+```
+0 9 * * 1 /opt/homelab/shared/ssl-expiry-check.sh
+```
+ 
+---
+ 
+## Notifications
+ 
+All scripts send an email on completion via the system `mail` command. Configure `msmtp` with an SMTP relay before scheduling.
+ 
+Email settings in `.env`:
+```bash
+EMAIL_FROM=""
+EMAIL_TO=""
+EMAIL_SUBJECT_PREFIX="[Homelab]"
+```
+ 
+Subject line will be `OK` on success or `FAILED` on error. The full log is in the email body.
+ 
+---
+ 
+## Flags
+ 
+| Flag | Scripts | Effect |
+|------|---------|--------|
+| `--dry-run` | All | Print what would happen, make no changes |
+| `--no-snapshot` | pve-update | Skip VM/CT snapshots before updating |
+| `--reboot` | pve-update | Auto-reboot after update if required |
+| `--compress` | appdata-backup | Use gzip tarball instead of rsync |
+| `--no-prune` | container-update | Keep dangling images after update |
+ 
+---
+ 
+## Shared Library
+ 
+`shared/lib.sh` is sourced by every script and provides logging, email on exit, dry-run mode, and common utilities. Do not run it directly.
+ 
+---
+ 
+## Updating
+ 
+```bash
+cd /opt/homelab && git pull
+find . -name "*.sh" -exec chmod +x {} \;
+```
 ## Troubleshooting Runbook
 
 ### Service Not Responding
