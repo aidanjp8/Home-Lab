@@ -37,7 +37,7 @@ experience with virtualization, containerization, networking, and systems admini
 ---
 
 ## Architecture
-> network diagram
+> network diagram (In Progress)
 
 **Environment Summary:**
 
@@ -111,10 +111,12 @@ A third node is planned for lab expansion (Active Directory, SIEM, networking pr
 | Pi-hole | Running | Internal DNS resolver and network-wide ad blocking |
 | _(additional services)_ | — | _(add as deployed)_ |
 
+### Unraid — Node 3
+
 | Service | Status | Purpose |
 |---|---|---|
 | Personal Finance Tracker | Developing |  |
-| _(additional services)_ | — | _(add as deployed)_ |
+| Wazuh | Running | Security Monitor |
 ---
 
 ## Network Configuration
